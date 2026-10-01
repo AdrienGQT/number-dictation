@@ -21,7 +21,7 @@ export default function MainButton({
                       }
                     : undefined
             }
-            className="bg-forest-500 font-pally font-semibold pl-3 pr-3 pt-2 pb-2 rounded-lg text-lg text-base-050 border-2 border-transparent hover:border-forest-400 drop-shadow-xs cursor-pointer"
+            className="bg-forest-500 font-pally font-semibold pl-3 pr-3 pt-2 pb-2 rounded-lg text-lg text-base-050 border-4 border-transparent hover:border-forest-400 drop-shadow-xs cursor-pointer"
         >
             {children}
         </button>

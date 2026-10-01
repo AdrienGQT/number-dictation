@@ -12,8 +12,8 @@ interface props {
 export default function ListenButton({ children, number, rate }: props) {
     const BASE_STYLE =
         "pl-3 pr-3 pt-2 pb-2 font-pally text-lg font-medium rounded-lg cursor-pointer flex flex-col items-center gap-2 drop-shadow-xs";
-    const DEFAULT_STYLE = "bg-base-900 text-base-200 w-6/10";
-    const SLOW_STYLE = "bg-base-200 text-base-900 w-4/10";
+    const DEFAULT_STYLE = "bg-base-050 text-base-900 w-full";
+    const SLOW_STYLE = "bg-base-200 text-base-900 w-full";
     return (
         <button
             className={
