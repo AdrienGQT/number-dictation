@@ -24,6 +24,7 @@ export default function ListenButton({ children, number, rate }: props) {
             onClick={() => {
                 speak(number, rate);
             }}
+            type="button"
         >
             {rate === "default" ? (
                 <VolumeUpRoundedIcon className="w-14! h-14!" />

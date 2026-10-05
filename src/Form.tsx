@@ -7,25 +7,40 @@ import ProgressBar from "./components/ProgressBar";
 import playSound from "./tools/playSound";
 
 export default function Form() {
-    const RANGE = { min: 0, max: 99 };
+    const RANGE = { min: 1, max: 99 };
     const MAX_INDEX = 5;
 
     const formRef = useRef<HTMLFormElement>(null);
+
+    const [pickedNumbers, setPickedNumbers] = useState<number[]>([]);
 
     const [currentNumber, setCurrentNumber] = useState<number | null>(null);
     const [dictationIndex, setDictationIndex] = useState<number>(1);
     const [isGameInProgress, setisGameInProgress] = useState<boolean>(false);
     const [isGameFinished, setIsGameFinished] = useState<boolean>(false);
 
-    const getRandomNumber = () => {
-        const min = Math.ceil(RANGE.min);
-        const max = Math.floor(RANGE.max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
     const refreshNumber = () => {
-        const randomNumber = getRandomNumber();
+        const totalPool = Array.from(
+            { length: RANGE.max - RANGE.min + 1 },
+            (_, i) => i + RANGE.min,
+        );
+
+        const remaining = totalPool.filter(
+            (num) => !pickedNumbers.includes(num),
+        );
+
+        if (remaining.length === 0) return;
+
+        const randomIndex = Math.floor(Math.random() * remaining.length);
+        const randomNumber = remaining[randomIndex];
+
         setCurrentNumber(randomNumber);
+        setPickedNumbers((prev) => {
+            const updated = [...prev, randomNumber];
+            console.log(updated); // Logs the actual updated list
+            return updated;
+        });
+
         speak(randomNumber, "default", 600);
     };
 
@@ -39,6 +54,7 @@ export default function Form() {
     const endDictation = () => {
         setDictationIndex(1);
         setCurrentNumber(null);
+        setPickedNumbers([]);
     };
 
     const resetGame = () => {
@@ -101,77 +117,79 @@ export default function Form() {
     };
 
     return (
-        <div className="w-full max-w-sm p-2">
+        <div className="w-full max-w-md p-4 h-full">
             {!isGameInProgress && (
-                <div className="flex flex-col gap-8">
-                    <div className="flex flex-col gap-0">
-                        <p className="text-base-900 text-2xl font-pally font-bold text-center">
-                            It's time for a
-                        </p>
-                        <h1 className="text-base-900 text-4xl font-pally font-extrabold text-center">
-                            Number dictation!
-                        </h1>
+                <div className="flex flex-col justify-between h-full">
+                    <div>
+
                     </div>
-                    <div className="flex flex-col gap-4">
-                        <h2 className="text-base-900 text-lg font-pally font-light text-center">
-                            Your job is simple: listen carrefuly to the voice,
-                            try to guess the number, write it and click
-                            'Confirm'! There will be {MAX_INDEX} numbers to
-                            guess.
-                        </h2>
-                        <p className="text-base-900 text-lg font-pally font-light text-center">
-                            Click the 'Start' button when you feel ready.
-                        </p>
+                    <div className="flex flex-col gap-8">
+                        <div className="flex flex-col gap-0">
+                            <p className="text-base-900 text-2xl font-pally font-bold text-center">
+                                It's time for a
+                            </p>
+                            <h1 className="text-base-900 text-4xl font-pally font-extrabold text-center">
+                                Number dictation!
+                            </h1>
+                        </div>
+                        <div className="flex flex-col gap-4">
+                            <h2 className="text-base-900 text-lg font-pally text-center">
+                                Your job is simple: listen carrefuly to the
+                                voice, try to guess the number, write it and
+                                click 'Confirm'! There will be {MAX_INDEX}{" "}
+                                numbers to guess.
+                            </h2>
+                            <p className="text-base-900 text-lg font-pally text-center">
+                                Click the 'Start' button when you feel ready.
+                            </p>
+                        </div>
                     </div>
 
-                    {/* <button
-                        onClick={startDictation}
-                        className="bg-forest-500 font-pally font-semibold pl-3 pr-3 pt-2 pb-2 rounded-lg text-lg text-base-050 border-2 border-transparent hover:border-forest-400 drop-shadow-xs cursor-pointer"
-                    >
-                        Start!
-                    </button> */}
                     <MainButton onClick={startDictation}>Start!</MainButton>
                 </div>
             )}
 
             {isGameInProgress && (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8 h-full">
                     {!isGameFinished && (
                         <>
-                            {/* Progress Bar */}
-                            <ProgressBar
-                                index={dictationIndex}
-                                max={MAX_INDEX}
-                            />
-
-                            {/* Repeat buttons */}
-                            <div className="flex gap-2">
-                                <ListenButton
-                                    number={currentNumber}
-                                    rate="default"
-                                >
-                                    Listen again
-                                </ListenButton>
-                                <ListenButton
-                                    number={currentNumber}
-                                    rate="slow"
-                                >
-                                    Listen slower
-                                </ListenButton>
-                            </div>
-
                             {/* Form */}
                             <form
-                                className="flex flex-col gap-3"
+                                className="flex flex-col justify-between h-full"
                                 onSubmit={handleSubmit}
                                 ref={formRef}
                             >
-                                <div className="flex flex-col gap-1">
-                                    <p className="font-pally text-lg font-medium text-base-900">
-                                        What number do you hear?
-                                    </p>
-                                    <NumberInput />
+                                {/* Progress Bar */}
+                                <ProgressBar
+                                    index={dictationIndex}
+                                    max={MAX_INDEX}
+                                />
+
+                                <div className="flex flex-col gap-3">
+                                    {/* Repeat buttons */}
+                                    <div className="flex gap-2">
+                                        <ListenButton
+                                            number={currentNumber}
+                                            rate="default"
+                                        >
+                                            Listen again
+                                        </ListenButton>
+                                        <ListenButton
+                                            number={currentNumber}
+                                            rate="slow"
+                                        >
+                                            Listen slower
+                                        </ListenButton>
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <p className="font-pally text-lg font-medium text-base-900">
+                                            What number do you hear?
+                                        </p>
+                                        <NumberInput />
+                                    </div>
                                 </div>
+
                                 <MainButton doSubmit={true}>
                                     Confirm!
                                 </MainButton>
@@ -179,14 +197,15 @@ export default function Form() {
                         </>
                     )}
                     {isGameFinished && (
-                        <div className="flex flex-col gap-32">
+                        <div className="flex flex-col justify-between h-full">
+                            <div></div>
                             <div className="flex flex-col gap-4">
                                 <p className="text-base-900 text-2xl font-pally font-bold text-center">
                                     Congratulations!
                                 </p>
-                                <p className="text-base-900 text-lg font-pally font-light text-center">
-                                    You did very well for this serie of {MAX_INDEX}
-                                    ! Go to homepage by clicking the
+                                <p className="text-base-900 text-lg font-pally text-center">
+                                    You did very well for this serie of{" "}
+                                    {MAX_INDEX}! Go to homepage by clicking the
                                     button below and start a new game.
                                 </p>
                             </div>
