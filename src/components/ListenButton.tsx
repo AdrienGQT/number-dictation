@@ -5,11 +5,11 @@ import speak, { type SpeechRateType } from "../tools/speak";
 
 interface props {
     children: ReactNode;
-    number: number | null;
+    item: string | null;
     rate?: SpeechRateType;
 }
 
-export default function ListenButton({ children, number, rate }: props) {
+export default function ListenButton({ children, item, rate }: props) {
     const BASE_STYLE =
         "pl-3 pr-3 pt-2 pb-2 font-pally text-lg font-medium rounded-lg cursor-pointer flex flex-col items-center gap-2 drop-shadow-xs";
     const DEFAULT_STYLE = "bg-base-050 text-base-900 w-full";
@@ -22,7 +22,7 @@ export default function ListenButton({ children, number, rate }: props) {
                     : BASE_STYLE + " " + SLOW_STYLE
             }
             onClick={() => {
-                speak(number, rate);
+                speak(item, rate);
             }}
             type="button"
         >

@@ -1,7 +1,7 @@
 const SOUNDS_PATHS = {
-    correct: "./sounds/correct.mp3",
-    error: "./sounds/error.mp3",
-    victory: "./sounds/victory.mp3",
+    correct: "/sounds/correct.mp3",
+    error: "/sounds/error.mp3",
+    victory: "/sounds/victory.mp3",
 } as const;
 
 type SoundPathType = keyof typeof SOUNDS_PATHS;

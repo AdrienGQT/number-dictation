@@ -1,59 +1,53 @@
 import { useEffect, useRef, useState } from "react";
-import speak from "../tools/speak";
-import playSound from "../tools/playSound";
+import speak from "../../tools/speak";
+import playSound from "../../tools/playSound";
 import { useNavigate } from "react-router-dom";
-import ProgressBar from "../components/ProgressBar";
-import ListenButton from "../components/ListenButton";
-import NumberInput from "../components/NumberInput";
-import MainButton from "../components/MainButton";
+import ProgressBar from "../../components/ProgressBar";
+import ListenButton from "../../components/ListenButton";
+import MainButton from "../../components/MainButton";
+import GameInput from "../../components/GameInput";
+import type { Gamemode } from "../Home";
 
 interface props {
     maxIndex: number;
-    range: { min: number; max: number };
+    pool: string[];
+    question: string;
+    gamemode: Gamemode;
 }
 
-export default function Game({ maxIndex, range }: props) {
+export default function Game({ maxIndex, pool, question, gamemode }: props) {
     const navigate = useNavigate();
 
     const formRef = useRef<HTMLFormElement>(null);
 
     const initializedRef = useRef(false);
 
-    const [pickedNumbers, setPickedNumbers] = useState<number[]>([]);
-    const [currentNumber, setCurrentNumber] = useState<number | null>(null);
+    const [pickedItems, setPickedItems] = useState<string[]>([]);
+    const [currentItem, setCurrentItem] = useState<string | null>(null);
     const [dictationIndex, setDictationIndex] = useState<number>(1);
 
-    const refreshNumber = () => {
-        console.log("refreshNumber");
-        const totalPool = Array.from(
-            { length: range.max - range.min + 1 },
-            (_, i) => i + range.min,
-        );
-
-        const remaining = totalPool.filter(
-            (num) => !pickedNumbers.includes(num),
-        );
+    const refreshItem = () => {
+        const remaining = pool.filter((item) => !pickedItems.includes(item));
 
         if (remaining.length === 0) return;
 
         const randomIndex = Math.floor(Math.random() * remaining.length);
-        const randomNumber = remaining[randomIndex];
+        const randomItem = remaining[randomIndex];
 
-        setCurrentNumber(randomNumber);
-        setPickedNumbers((prev) => {
-            const updated = [...prev, randomNumber];
+        setCurrentItem(randomItem);
+
+        setPickedItems((prev) => {
+            const updated = [...prev, randomItem];
             return updated;
         });
 
-        speak(randomNumber, "default", 600);
+        speak(randomItem, "default", 600);
     };
 
     useEffect(() => {
         if (initializedRef.current) return;
         initializedRef.current = true;
-
-        console.log("useEffect");
-        refreshNumber();
+        refreshItem();
     }, []);
 
     // Reset form content
@@ -64,12 +58,36 @@ export default function Game({ maxIndex, range }: props) {
         form.reset();
     };
 
+    // Handle form sumbmit
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const form = e.target as HTMLFormElement;
+        if (!form) return;
+
+        const formData = new FormData(form);
+        let answer = formData.get("answer") as string;
+        answer = answer.toLowerCase();
+
+        if (!answer) return;
+
+        checkAnswer(answer);
+    };
+
+    const checkAnswer = (answer: string) => {
+        if (answer === currentItem) {
+            handleCorrectAnswer();
+        } else {
+            handleUncorrectAnswer();
+        }
+    };
+
     // Handle correct answer
     const handleCorrectAnswer = () => {
         playSound("correct");
         if (dictationIndex !== maxIndex) {
             setDictationIndex(dictationIndex + 1);
-            refreshNumber();
+            refreshItem();
         } else {
             playSound("victory", 1000);
             navigate("/results");
@@ -80,29 +98,6 @@ export default function Game({ maxIndex, range }: props) {
     // Handle uncorrect answer
     const handleUncorrectAnswer = () => {
         playSound("error");
-    };
-
-    // Handle form sumbmit
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        const form = e.target as HTMLFormElement;
-        if (!form) return;
-
-        const formData = new FormData(form);
-        const answer = formData.get("answer") as string;
-        if (!answer) return;
-
-        const answerAsNumber = parseInt(answer);
-        checkAnswer(answerAsNumber);
-    };
-
-    const checkAnswer = (answer: number) => {
-        if (answer === currentNumber) {
-            handleCorrectAnswer();
-        } else {
-            handleUncorrectAnswer();
-        }
     };
 
     return (
@@ -118,19 +113,19 @@ export default function Game({ maxIndex, range }: props) {
                 <div className="flex flex-col gap-3">
                     {/* Repeat buttons */}
                     <div className="flex gap-2">
-                        <ListenButton number={currentNumber} rate="default">
+                        <ListenButton item={currentItem} rate="default">
                             Listen again
                         </ListenButton>
-                        <ListenButton number={currentNumber} rate="slow">
+                        <ListenButton item={currentItem} rate="slow">
                             Listen slower
                         </ListenButton>
                     </div>
 
                     <div className="flex flex-col gap-1">
                         <p className="font-pally text-lg font-medium text-base-900">
-                            What number do you hear?
+                            {question}
                         </p>
-                        <NumberInput />
+                        <GameInput gamemode={gamemode} />
                     </div>
                 </div>
 
