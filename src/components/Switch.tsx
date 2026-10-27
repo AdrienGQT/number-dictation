@@ -21,8 +21,20 @@ export default function Switch({
         onChange?.(option);
     };
 
+    const isSecondOptionSelected = selected === secondOption;
+
     return (
-        <div className="w-full p-1 bg-base-050 flex rounded-xl gap-1">
+        <div className="w-full p-1 bg-base-050 flex rounded-xl gap-1 relative">
+            <div
+                className="
+                        absolute top-1 left-1
+                        w-[calc(50%-6px)]
+                        h-[calc(100%-8px)]
+                        rounded-lg bg-forest-500
+                        transition-left duration-200 ease-playful
+                    "
+                style={{ left: isSecondOptionSelected ? "calc(50% + 2px)" : "4px" }}
+            ></div>
             <SwitchOption
                 state={selected === firstOption ? "selected" : "default"}
                 onClick={() => {
