@@ -1,12 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import MainButton from "../components/MainButton";
+import type { Dispatch } from "react";
 
 interface props {
     maxIndex: number;
+    gameErrorCount: number;
+    setGameErrorCount: Dispatch<React.SetStateAction<number>>;
 }
 
-export default function Results({ maxIndex }: props) {
+export default function Results({
+    maxIndex,
+    gameErrorCount,
+    setGameErrorCount,
+}: props) {
     const navigate = useNavigate();
+
+    const endGame = () => {
+        setGameErrorCount(0);
+        navigate("/");
+    };
 
     return (
         <div className="w-full max-w-md p-4 h-full flex flex-col gap-8">
@@ -17,13 +29,15 @@ export default function Results({ maxIndex }: props) {
                         Congratulations!
                     </p>
                     <p className="text-base-900 text-lg font-pally text-center">
-                        You did very well for this serie of {maxIndex}! Go to
-                        homepage by clicking the button below and start a new
-                        game.
+                        You answered correctly to {maxIndex - gameErrorCount} questions out of {maxIndex}!
+                    </p>
+                    <p className="text-base-900 text-lg font-pally text-center">
+                        Go to homepage by clicking the button below and start a
+                        new game.
                     </p>
                 </div>
 
-                <MainButton onClick={() => navigate("/")}>
+                <MainButton onClick={() => endGame()}>
                     Go to homepage
                 </MainButton>
             </div>

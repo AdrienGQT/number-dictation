@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Dispatch } from "react";
 import speak from "../../tools/speak";
 import playSound from "../../tools/playSound";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,18 @@ interface props {
     pool: string[];
     question: string;
     gamemode: Gamemode;
+    gameErrorCount: number;
+    setGameErrorCount: Dispatch<React.SetStateAction<number>>;
 }
 
-export default function Game({ maxIndex, pool, question, gamemode }: props) {
+export default function Game({
+    maxIndex,
+    pool,
+    question,
+    gamemode,
+    gameErrorCount,
+    setGameErrorCount,
+}: props) {
     const navigate = useNavigate();
 
     const formRef = useRef<HTMLFormElement>(null);
@@ -25,6 +34,9 @@ export default function Game({ maxIndex, pool, question, gamemode }: props) {
     const [pickedItems, setPickedItems] = useState<string[]>([]);
     const [currentItem, setCurrentItem] = useState<string | null>(null);
     const [dictationIndex, setDictationIndex] = useState<number>(1);
+
+    const [currentTriesCount, setCurrentTriesCount] = useState<number>(0);
+    const [currentErrorCount, setCurrentErrorCount] = useState<number>(0);
 
     const refreshItem = () => {
         const remaining = pool.filter((item) => !pickedItems.includes(item));
@@ -50,7 +62,6 @@ export default function Game({ maxIndex, pool, question, gamemode }: props) {
         refreshItem();
     }, []);
 
-    // Reset form content
     const resetForm = () => {
         const form = formRef.current;
         if (!form) return;
@@ -58,7 +69,6 @@ export default function Game({ maxIndex, pool, question, gamemode }: props) {
         form.reset();
     };
 
-    // Handle form sumbmit
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -75,6 +85,8 @@ export default function Game({ maxIndex, pool, question, gamemode }: props) {
     };
 
     const checkAnswer = (answer: string) => {
+        setCurrentTriesCount(currentTriesCount + 1);
+
         if (answer === currentItem) {
             handleCorrectAnswer();
         } else {
@@ -82,22 +94,33 @@ export default function Game({ maxIndex, pool, question, gamemode }: props) {
         }
     };
 
-    // Handle correct answer
     const handleCorrectAnswer = () => {
         playSound("correct");
         if (dictationIndex !== maxIndex) {
-            setDictationIndex(dictationIndex + 1);
-            refreshItem();
+            goToNextQuestion();
         } else {
             playSound("victory", 1000);
+            computeGlobalErrors();
             navigate("/results");
         }
         resetForm();
     };
 
-    // Handle uncorrect answer
     const handleUncorrectAnswer = () => {
         playSound("error");
+        setCurrentErrorCount(currentErrorCount + 1);
+    };
+
+    const goToNextQuestion = () => {
+        computeGlobalErrors();
+        setDictationIndex(dictationIndex + 1);
+        refreshItem();
+        setCurrentErrorCount(0);
+        setCurrentTriesCount(0);
+    };
+
+    const computeGlobalErrors = () => {
+        if (currentErrorCount) setGameErrorCount(gameErrorCount + 1);
     };
 
     return (
