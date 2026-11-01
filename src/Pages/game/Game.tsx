@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type Dispatch } from "react";
+import {
+    useEffect,
+    useRef,
+    useState,
+    type ChangeEvent,
+    type Dispatch,
+} from "react";
 import speak from "../../tools/speak";
 import playSound from "../../tools/playSound";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +43,8 @@ export default function Game({
 
     const [currentTriesCount, setCurrentTriesCount] = useState<number>(0);
     const [currentErrorCount, setCurrentErrorCount] = useState<number>(0);
+
+    const [inputValue, setInputValue] = useState<string>("");
 
     const refreshItem = () => {
         const remaining = pool.filter((item) => !pickedItems.includes(item));
@@ -148,11 +156,21 @@ export default function Game({
                         <p className="font-pally text-lg font-medium text-base-900">
                             {question}
                         </p>
-                        <GameInput gamemode={gamemode} />
+                        <GameInput
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setInputValue(e.target.value)
+                            }
+                            gamemode={gamemode}
+                        />
                     </div>
                 </div>
 
-                <MainButton doSubmit={true}>Confirm!</MainButton>
+                <MainButton
+                    doSubmit={true}
+                    disabled={inputValue.trim() === "" ? true : false}
+                >
+                    Confirm!
+                </MainButton>
             </form>
         </div>
     );
