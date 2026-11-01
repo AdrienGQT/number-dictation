@@ -25,7 +25,7 @@ export default function ProgressBar({ index, max }: props) {
             <div className="w-full h-3 bg-base-050 rounded-xl flex drop-shadow-xs overflow-hidden">
                 <div
                     ref={progressBarRef}
-                    className="bg-forest-500 rounded-xl min-w-3"
+                    className="bg-ocean-500 rounded-xl min-w-3"
                 ></div>
             </div>
         </div>

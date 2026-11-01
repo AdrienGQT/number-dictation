@@ -30,7 +30,7 @@ export default function Switch({
                         absolute top-1 left-1
                         w-[calc(50%-6px)]
                         h-[calc(100%-8px)]
-                        rounded-lg bg-forest-500
+                        rounded-lg bg-ocean-500
                         transition-left duration-200 ease-playful
                     "
                 style={{ left: isSecondOptionSelected ? "calc(50% + 2px)" : "4px" }}
