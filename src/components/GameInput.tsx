@@ -1,4 +1,4 @@
-import type { ChangeEvent } from "react";
+import React, { type ChangeEvent } from "react";
 import { GAMEMODES, type Gamemode } from "../Pages/Home";
 
 interface Props {
@@ -7,11 +7,18 @@ interface Props {
 }
 
 export default function GameInput({ gamemode, onChange }: Props) {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (e.code === "Space") {
+            e.preventDefault();
+        }
+    };
+
     return (
         <input
             placeholder={gamemode === GAMEMODES[0] ? "00" : ""}
             name="answer"
             onChange={onChange}
+            onKeyDown={handleKeyDown}
             type={gamemode === GAMEMODES[0] ? "number" : "text"}
             required
             className="
