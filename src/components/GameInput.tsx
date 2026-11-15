@@ -7,18 +7,26 @@ interface Props {
 }
 
 export default function GameInput({ gamemode, onChange }: Props) {
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (e.code === "Space") {
+    const handleBeforeInput = (e: React.FormEvent<HTMLInputElement>): void => {
+        const inputEvent = e.nativeEvent as InputEvent;
+        if (inputEvent.data && inputEvent.data.includes(" ")) {
             e.preventDefault();
         }
+    };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        if (e.target.value.includes(" ")) {
+            e.target.value = e.target.value.replace(/\s+/g, "");
+        }
+        onChange(e);
     };
 
     return (
         <input
             placeholder={gamemode === GAMEMODES[0] ? "00" : ""}
             name="answer"
-            onChange={onChange}
-            onKeyDown={handleKeyDown}
+            onChange={handleChange}
+            onBeforeInput={handleBeforeInput}
             type={gamemode === GAMEMODES[0] ? "number" : "text"}
             required
             className="
