@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import MainButton from "../components/MainButton";
+import PrimaryButton from "../components/buttons/PrimaryButton";
 import type { Dispatch } from "react";
 
 interface props {
@@ -37,9 +37,9 @@ export default function Results({
                     </p>
                 </div>
 
-                <MainButton onClick={() => endGame()}>
+                <PrimaryButton onClick={() => endGame()}>
                     Go to homepage
-                </MainButton>
+                </PrimaryButton>
             </div>
         </div>
     );

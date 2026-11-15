@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import MainButton from "../components/MainButton";
+import PrimaryButton from "../components/buttons/PrimaryButton";
 import Switch from "../components/Switch";
 import { useState } from "react";
 
@@ -48,7 +48,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <MainButton
+                <PrimaryButton
                     onClick={() =>
                         navigate(
                             `${selectedMode === GAMEMODES[0] ? "/game/numbers" : "/game/alphabet"}`,
@@ -56,7 +56,7 @@ export default function Home() {
                     }
                 >
                     Start!
-                </MainButton>
+                </PrimaryButton>
             </div>
         </div>
     );

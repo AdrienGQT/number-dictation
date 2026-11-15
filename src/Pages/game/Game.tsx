@@ -10,7 +10,7 @@ import playSound from "../../tools/playSound";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../../components/ProgressBar";
 import ListenButton from "../../components/ListenButton";
-import MainButton from "../../components/MainButton";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
 import GameInput from "../../components/GameInput";
 import type { Gamemode } from "../Home";
 
@@ -165,12 +165,12 @@ export default function Game({
                     </div>
                 </div>
 
-                <MainButton
+                <PrimaryButton
                     doSubmit={true}
                     disabled={inputValue.trim() === "" ? true : false}
                 >
                     Confirm!
-                </MainButton>
+                </PrimaryButton>
             </form>
         </div>
     );

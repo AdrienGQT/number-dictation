@@ -7,7 +7,7 @@ interface props {
     children: ReactNode;
 }
 
-export default function MainButton({
+export default function PrimaryButton({
     doSubmit = false,
     onClick,
     disabled = false,
