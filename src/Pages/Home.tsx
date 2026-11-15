@@ -25,7 +25,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col gap-4">
                         <h2 className="text-base-900 text-lg font-pally text-center">
-                            Your job is simple: listen carefuly to the voice,
+                            Your job is simple: listen carefully to the voice,
                             try to guess what is said, write it and click
                             'Confirm'!
                         </h2>
