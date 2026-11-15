@@ -16,7 +16,6 @@ export default function AlphabetGame({
     setGameErrorCount,
 }: Props) {
     const pool = "abcdefghijklmnopqrstuvwxyz".split("");
-    console.log(pool);
 
     return (
         <Game
